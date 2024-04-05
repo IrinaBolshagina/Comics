@@ -1,7 +1,7 @@
 from fastapi import FastAPI, staticfiles, UploadFile
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
-
+from fastapi.responses import JSONResponse
 
 
 
@@ -29,4 +29,11 @@ async def read_root(trip_options: TripOptions):
 
 @app.post("/images")
 async def images(file: UploadFile):
-    return {"filename": file.filename}
+    # file.write()
+    # return {"filename": file.filename}
+    try:
+        with open("static/comics/images/uploaded/" + file.filename, "wb") as buffer:
+            buffer.write(await file.read())
+        return JSONResponse(content={"message": "File uploaded successfully"})
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"message": f"Failed to upload file: {e}"})
