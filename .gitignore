@@ -1,0 +1,16 @@
+.env
+.virtual_documents
+.idea
+.ipynb_checkpoints
+.DS_Store
+.venv
+*/.env
+.env/
+.virtual_documents/
+.idea/
+.ipynb_checkpoints/
+.DS_Store/
+.venv/
+*/.env/
+HuggingFaceGuidedTourForMac/
+HuggingFaceGuidedTourForMac

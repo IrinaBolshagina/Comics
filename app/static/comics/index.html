@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
+
+  <title>DeepComics</title>
+  <style>
+    .image_container {
+      position: relative;
+      width: 50%;
+      /* Adjust as needed */
+    }
+
+    .image {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+
+    /* Position the bubble and text on top of the image */
+    .bubble_container {
+      position: absolute;
+      width: 200px;
+      height: auto;
+      display: flex;
+      top: 5%;
+      left: 2%;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .bubble_image {
+      max-width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .bubble_text {
+      position: absolute;
+      top: 20px;
+      /* Adjust position to the image */
+      left: 10px;
+      /* Adjust position to the image */
+      font-family: "Bangers", system-ui;
+      font-weight: 400;
+      font-size: 1em;
+      width: fit-content;
+      text-align: center;
+      padding-right: 15px;
+      /* Add padding to the text */
+      padding-bottom: 30px;
+    }
+
+    .text-container {
+      position: absolute;
+      width: 80%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      background-color: rgba(255, 255, 0, 0.5);
+
+    }
+  </style>
+</head>
+
+<body>
+
+  <form id="myForm">
+    <label for="session_number">Session Number:</label><br>
+    <input type="number" id="session_number" name="session_number"><br>
+    <button type="button" onclick="submitForm()">Submit</button>
+  </form>
+
+  <script>
+    function submitForm() {
+      const sessionNumber = document.getElementById('session_number').value;
+
+      fetch('http://localhost:8000/test', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ current_session: parseInt(sessionNumber) })
+      })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.error('Error:', error));
+    }
+  </script>
+
+  <div class="container">
+    <!-- Image -->
+    <img class="image" src="images/gen_image_2.png" alt="Image1">
+    <div class="bubble_container">
+      <img class="bubble_image" src="images/bubbles/bubble1.svg">
+      <span class="bubble_text">"I'm a superhero, I'm the brightest star!</span>
+    </div>
+  </div>
+  </div>
+
+</body>
+
+</html>
