@@ -14,3 +14,5 @@
 */.env/
 HuggingFaceGuidedTourForMac/
 HuggingFaceGuidedTourForMac
+__pycache__
+__pycache__/

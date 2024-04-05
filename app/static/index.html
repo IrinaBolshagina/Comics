@@ -1,106 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
-
-  <title>DragAndDrop</title>
-  <style>
-    .image_container {
-      position: relative;
-      width: 50%;
-      /* Adjust as needed */
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drag and Drop Images</title>
+<style>
+    #drop-area {
+        width: 300px;
+        height: 200px;
+        border: 2px dashed #ccc;
+        border-radius: 20px;
+        text-align: center;
+        margin: 0 auto;
+        margin-top: 50px;
     }
-
-    .image {
-      max-width: 100%;
-      height: auto;
-      display: block;
+    #drop-area.highlight {
+        border-color: purple;
     }
-
-
-    /* Position the bubble and text on top of the image */
-    .bubble_container {
-      position: absolute;
-      width: 200px;
-      height: auto;
-      display: flex;
-      top: 5%;
-      left: 2%;
-      align-items: center;
-      justify-content: center;
+    p {
+        margin-top: 0;
     }
-
-    .bubble_image {
-      max-width: 100%;
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-
-    .bubble_text {
-      position: absolute;
-      top: 20px;
-      /* Adjust position to the image */
-      left: 10px;
-      /* Adjust position to the image */
-      font-family: "Bangers", system-ui;
-      font-weight: 400;
-      font-size: 1em;
-      width: fit-content;
-      text-align: center;
-      padding-right: 15px;
-      /* Add padding to the text */
-      padding-bottom: 30px;
-    }
-
-    .text-container {
-      position: absolute;
-      width: 80%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      background-color: rgba(255, 255, 0, 0.5);
-
-    }
-  </style>
+</style>
 </head>
-
 <body>
 
-  <form id="myForm">
-    <label for="session_number">Session Number:</label><br>
-    <input type="number" id="session_number" name="session_number"><br>
-    <button type="button" onclick="submitForm()">Submit</button>
-  </form>
+<div id="drop-area" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);" ondragenter="dragEnterHandler(event);" ondragleave="dragLeaveHandler(event);">
+    <p>Drag & Drop Images Here</p>
+</div>
 
-  <script>
-    function submitForm() {
-      const sessionNumber = document.getElementById('session_number').value;
-
-      fetch('http://localhost:8000/test', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ current_session: parseInt(sessionNumber) })
-      })
-        .then(response => response.json())
-        .then(data => console.log(data))
-        .catch(error => console.error('Error:', error));
+<script>
+    function dragOverHandler(event) {
+        event.preventDefault();
+        event.dataTransfer.dropEffect = 'copy'; 
     }
-  </script>
 
-  <div class="container">
-    <!-- Image -->
-    HELLO
-  </div>
-  </div>
+    function dragEnterHandler(event) {
+        event.preventDefault();
+        document.getElementById('drop-area').classList.add('highlight');
+    }
+
+    function dragLeaveHandler(event) {
+        event.preventDefault();
+        document.getElementById('drop-area').classList.remove('highlight');
+    }
+
+    function dropHandler(event) {
+        event.preventDefault();
+        document.getElementById('drop-area').classList.remove('highlight');
+
+        const files = event.dataTransfer.files;
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            if (file.type.startsWith('image/')) {
+                uploadImage(file);
+            } else {
+                alert('Please drop only image files.');
+            }
+        }
+    }
+
+    function uploadImage(file) {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        fetch('http://localhost:8000/images', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to upload image.');
+            }
+            alert('Image uploaded successfully.');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to upload image.');
+        });
+    }
+</script>
 
 </body>
-
 </html>
