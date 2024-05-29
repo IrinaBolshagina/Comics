@@ -10,6 +10,7 @@ class TripOptions(BaseModel):
 
 app = FastAPI()
 
+# Allow browser to send requests to the server
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Adjust this to allow requests from specific origins
@@ -19,18 +20,25 @@ app.add_middleware(
 )
 
 
+# Mount html files for URL /upload
 app.mount("/upload", staticfiles.StaticFiles(directory="static", html=True), name="static")
+# Mount html files for URL /comics
 app.mount("/comics", staticfiles.StaticFiles(directory="static/comics", html=True), name="comics")
 
+# API post endpoint to test
 @app.post("/test")
 async def read_root(trip_options: TripOptions):
+    '''
+    This is a test endpoint to check if the server is running
+    '''
     print("text")
     return {"current_session": trip_options.current_session}
 
 @app.post("/images")
 async def images(file: UploadFile):
-    # file.write()
-    # return {"filename": file.filename}
+    '''
+    This endpoint is used to upload images to the server
+    '''
     try:
         with open("static/comics/images/uploaded/" + file.filename, "wb") as buffer:
             buffer.write(await file.read())
